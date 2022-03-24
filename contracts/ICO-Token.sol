@@ -2,38 +2,17 @@
 pragma solidity >=0.5.0 <0.9.0;
 
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 
-contract Token {
-    string public name;
-    string public symbol;
-    uint256 public totalSupply;
-    uint256 public decimal;
 
+contract VimToken is ERC20, ERC20Detailed {
     constructor(
-        string memory _name,
-        string memory _symbol,
-        uint256 _totalSupply,
-        uint256 _decimal
-    ) public {
-        name = _name;
-        symbol = _symbol;
-        totalSupply = _totalSupply;
-        decimal = _decimal;
-    }
+        string _name,
+        string _symbol,
+        uint8 _decimals
+    ) public DetailedERC20(_name, _symbol, _decimals) {
 
-    function getName() public view returns (string memory) {
-        return name;
-    }
-
-    function getSymbol() public view returns (string memory) {
-        return symbol;
-    }
-
-    function getTotalSupply() public view returns (uint256) {
-        return totalSupply;
-    }
-
-    function getDecimal() public view returns (uint256) {
-        return decimal;
+    
     }
 }
