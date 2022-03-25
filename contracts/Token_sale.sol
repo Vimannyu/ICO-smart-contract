@@ -10,7 +10,7 @@ contract tokenSale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
     uint256 private minWeiForOnePreToken = 3333;
     uint256 private minWeiForOneSeedToken = 6666;
 
-    enum ICOStageS {
+    enum ICOStages {
         preSale,
         seedSale,
         finalSale
@@ -35,3 +35,27 @@ contract tokenSale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
         uint256 _cap
     ) public Crowdsale(_rate, _wallet, _token) CappedCrowdsale(_cap) {}
 }
+
+function setStage(uint256 _stage) public onlyOwner {
+    if (uint256(ICOStages.preSale) == _stage) {
+        stage = ICOStages.preICO;
+    } else if (uint256(ICOStages.seedSale) == _stage) {
+        stage = ICOStages.seedSale;
+    } else {
+        stage = ICOStages.finalSale;
+    }
+}
+
+
+   function rateCalculation() internal view returns (uint256) {
+        if(stage == ICOStageS.preSale){
+            return 300000;
+        } else if(stage == ICOStage.seedSale){
+            return 150000;
+        } else if(stage == ICOStages.finalSale){
+            return 600000;  
+        }
+    }
+    function grtRate() public view returns (uint256) {
+        return rateCalculation();
+    }
