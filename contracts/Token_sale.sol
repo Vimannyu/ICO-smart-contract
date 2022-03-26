@@ -5,28 +5,24 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/crowdsale/Crowdsale.sol";
 import "@openzeppelin/contracts/crowdsale/emission/MintedCrowdsale.sol";
 import "@openzeppelin/contracts/crowdsale/validation/CappedCrowdsale.sol";
+import "@openzeppelin/contracts/crowdsale/distribution/RefundableCrowdsale.sol";
 
 contract tokenSale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
-    uint256 private minWeiForOnePreToken = 3333;
-    uint256 private minWeiForOneSeedToken = 6666;
+    
+    
+    uint256 private minTokenPreSaleCap = 30000000 * (10**(token.decimals()));     // in TOKENbits
+    uint256 private minTokenSeedSaleCap = 50000000 * (10**(token.decimals()));
+    uint256 private minWeiAmountForPreSale = 3337;  //min wei amouint to buy 1 token during presale.
+    uint256 private minWieAmountForSeedSale = 6667; //min wei amouint to buy 1 token during seedsale.
 
     enum ICOStages {
         preSale,
-        seedSale,
-        finalSale
+        seedSale
     }
 
-    ICOStages public stage = ICOStages.preSale;
+    ICOStages public stage = ICOStages.preSale; // Default stage
 
-    function investorMinCap() internal view returns (uint256) {
-        if (stage == ICOStages.preSale) {
-            return minWeiForOnePreToken;
-        } else {
-            return minWeiForOneSeedToken;
-        }
-    }
-
-    uint256 public investorMaxCap = 100000000000000000000;
+    uint256  public investorMinCap ;
 
     constructor(
         uint256 _rate,
@@ -34,28 +30,39 @@ contract tokenSale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
         ERC20 _token,
         uint256 _cap
     ) public Crowdsale(_rate, _wallet, _token) CappedCrowdsale(_cap) {}
+
+
+    
 }
 
-function setStage(uint256 _stage) public onlyOwner {
-    if (uint256(ICOStages.preSale) == _stage) {
-        stage = ICOStages.preICO;
-    } else if (uint256(ICOStages.seedSale) == _stage) {
-        stage = ICOStages.seedSale;
-    } else {
-        stage = ICOStages.finalSale;
-    }
+function setStage(uint value) public onlyOwner {
+
+  ICOStages _stage;
+
+      if (uint(ICOStages.preSale) == value) {
+        _stage = ICOStages.preSale;
+      } else if (uint(ICOStages.seedSale) == value) {
+        _stage = ICOStages.seedSale;
+      }
+
+      stage = _stage;
+
+      if (stage == ICOStages.preSale) {
+        setRate(300000);  // 1 wei will give 300000 TOKENbits 
+      } else if (stage == ICOStages.seedSale) {
+        setRate(150000); // 1 wei will give 150000 TOKENbits
+      }
+  }
+
+  function setRate(uint256 _rate) private {
+      rate = _rate;
+  }
+    
+
+
+
+function ICOflow() public {
+    
+
+
 }
-
-
-   function rateCalculation() internal view returns (uint256) {
-        if(stage == ICOStageS.preSale){
-            return 300000;
-        } else if(stage == ICOStage.seedSale){
-            return 150000;
-        } else if(stage == ICOStages.finalSale){
-            return 600000;  
-        }
-    }
-    function grtRate() public view returns (uint256) {
-        return rateCalculation();
-    }

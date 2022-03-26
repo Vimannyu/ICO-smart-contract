@@ -5,17 +5,17 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 
-
-contract VimToken is ERC20, ERC20Detailed {
+contract ZEROToken is ERC20, ERC20Detailed {
     constructor(
         string _name,
         string _symbol,
-        uint8 _decimals ,
+        uint8 _decimals,
         uint256 _initialSupply
     ) public DetailedERC20(_name, _symbol, _decimals) {
-
         _mint(_msgSender(), _initialSupply);
+    }
 
-    
+    function getDecimal() public view returns (uint256) {
+        return 9;
     }
 }
