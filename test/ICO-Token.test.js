@@ -8,7 +8,7 @@ describe("ERC20 Token testing" , function () {
 
 
         const token = await ethers.getContractFactory("ZEROToken");
-        const deptoken =  await token.deploy( 'ZeroToken' , 'ZERO' ,100000000 , 9);
+        const deptoken =  await token.deploy( 'ZeroToken' , 'ZERO' ,100000000 , 3);
         deptoken.deployed();
 
         expect(await deptoken.getName()).to.equal("ZeroToken");
