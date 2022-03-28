@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity >=0.5.0 <0.9.0;
 
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 
-contract Token is ERC20Detailed {
+contract ZEROToken is ERC20, ERC20Detailed {
     constructor(
-        string memory name,
-        string memory symbol,
-        uint8 decimals
-    ) public ERC20Detailed(name, symbol, decimals) {}
+        string _name,
+        string _symbol,
+        uint8 _decimals,
+        uint256 _initialSupply
+    ) public DetailedERC20(_name, _symbol, _decimals) {
+        _mint(_msgSender(), _initialSupply);
+    }
+
+    function getDecimal() public view returns (uint256) {
+        return 9;
+    }
 }
