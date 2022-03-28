@@ -1,12 +1,13 @@
 const {expect} = require('chai');
 const { ethers } = require('hardhat');
+const { describe } = require('yargs');
 
 describe("ERC20 Token testing" , function () {
 
-    it('Checking the name if the token has the correct name' , async function () {
+    it('Checking the attributes of the token' , async function () {
 
 
-        const token = await ethers.getContractFactory("Token");
+        const token = await ethers.getContractFactory("ZEROToken");
         const deptoken =  await token.deploy( 'VimToken' , 'VIM' ,100000000 , 18 );
         deptoken.deployed();
 
