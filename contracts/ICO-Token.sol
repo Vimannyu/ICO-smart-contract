@@ -7,15 +7,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 
 contract ZEROToken is ERC20, ERC20Detailed {
     constructor(
-        string _name,
-        string _symbol,
+        string  memory _name,
+        string memory  _symbol,
         uint8 _decimals,
         uint256 _initialSupply
-    ) public DetailedERC20(_name, _symbol, _decimals) {
+    ) public ERC20Detailed(_name, _symbol, _decimals) {
         _mint(_msgSender(), _initialSupply);
     }
 
-    function getDecimal() public view returns (uint256) {
+    function getDecimal() public pure returns (uint256) {
         return 9;
     }
 }
