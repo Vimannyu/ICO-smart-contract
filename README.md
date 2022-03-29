@@ -1,42 +1,138 @@
-# Advanced Sample Hardhat Project
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+# ICO smart contract
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+ICO stands for a token or cryptocurrency initial offering crowdsale. It is a common method in blockchain space, decentralized applications and in-game tokens for bootstrap funding of your project.
 
-Try running some of the following tasks:
+This project aims to provide standard, secure smart contracts and tools to create crowdsales for Ethereum blockchain.
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.js
-node scripts/deploy.js
-npx eslint '**/*.js'
-npx eslint '**/*.js' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
+
+![Logo](https://www.researchgate.net/publication/338845616/figure/fig3/AS:941831072280579@1601561434403/The-ICO-process-and-generation-of-tokens.png)
+
+
+## Problem Statement
+
+Create an ICO Smart Contract, with your custom ERC20 Token with the below details: (No plagiarism allowed, can use OpenZeppelin)
+- Total Supply of Token: 100 Million 
+- Initial Value at $0.01 (Pre-sale Quantity: 30 Million)
+- 2nd Sale Value at $0.02 (Seed Sale Quantity: 50 Million)
+- Final Sale for Remaining Tokens should be dynamically allocated.
+## Installation
+
+Install ICO crowdsale-project with npm
+
+```bash
+  npm install Vimannyu/ICO-smart-contract
+  cd ICO-project
+```
+    
+## ICO smart contract function walkthrough
+
+## Token creation
+
+```http
+   Token is created by the ERC20 standards.
 ```
 
-# Etherscan verification
+| Method | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `ERC20` | `Token` | returns the address of the created token |
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+####  Parameter to generate Token
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
-
-```shell
-hardhat run --network ropsten scripts/deploy.js
+```http
+  Name of the token
 ```
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Name`    | `string` | Defines the name of the token |
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
+
+```http
+  Symbol of the token
 ```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Symbol`    | `string` | Defines the symbol of the token |
+
+
+```http
+  Total Supply
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Total Supply`    | `uint256` | Total number of tokens at initial stage |
+
+## Crowdsale ICO
+
+```http
+   To distribute the tokens among the intresting buyers and raise funds of the organisation.
+```
+
+| Method | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `setStage` | `function` | This method set the stage for the corwdsale weather the sale is in presale phase or seedsale phase. |
+
+```http
+   
+```
+
+| Method | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `setFinalStage` | `function` | This method set the final stage for the remaining to get sold out . |
+
+```http
+  
+```
+
+| Method | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| ` fundTransfer`    | `function` | Transfers the collected funds to the wallet |
+
+```http
+  
+```
+
+| Method | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| ` endCrowdSale`    | `function` | Only owner can call this method what this method does is end the crowdsale and transfer the collected funds to wallet. |
+
+
+
+## Tech Stack
+
+- **Programming Languages:** Javascript and solidity.
+- **Tools :** Hardhat , remix , chai , Metamask , ganache etc.
+
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npx hardhat test
+```
+
+
+## Deployment
+
+To deploy this project run
+
+```bash
+  npx hardhat run --network ropsten scripts/tokenDeploy.js
+```
+
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`ETHERSCAN_API_KEY`
+
+`ROPSTEN_URL`
+
+`PRIVATE_KEY`
+
