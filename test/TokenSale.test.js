@@ -1,38 +1,36 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { describe } = require('yargs');
-const BigNumber = web3.BigNumber;
-
-const rate = 300000; //hardcoding rate to test it .
-const wallet = wallet;
-const token = token.address;
-const cap = ethers.utils.parseEther("1000"); // we will get the value in wei
-//console.log(cap);
-const goal = ethers.utils.parseEther("500"); // the goal of the organisation to reach by creating ICO.
-//console.log(goal);
-
-
-  // ICO Stages
-  const preSale = 0;
-  const preIcoRate = 300000;
-  const  seedSale = 1;
-  const icoRate = 150000;
-
-
-
-
-
-
-
-
 
 beforeEach(async function () {
   const token = await ethers.getContractFactory("ZEROToken");
-  const tokenSale = await ethers.getContractFactory("ZEROtokenSale");
+  const deptoken = await token.deploy("ZeroToken", "ZERO", 9, 100000000);
+  await deptoken.deployed();
+
+  const tokenSale = await ethers.getContractAt("ZEROtokenSale");
   [wallet, owner, addr1, addr2, ...addrs] = await ethers.getSigners();
+});
+
+const rate = 300000; //hardcoding rate to test it .
+const wallet = wallet.address;
+const token = deptoken.address;
+const exp = ethers.BigNumber.from("10").pow(19);
+const capval = ethers.BigNumber.from("10").mul(exp);
+const goalval = ethers.BigNumber.from("5").mul(exp);
+const cap = capval; // we will get the value in wei
+//console.log(cap);
+const goal = goalval; // the goal of the organisation to reach by creating ICO.
+//console.log(goal);
+
+beforeEach(async function () {
   deployedTokenSale = await tokenSale.deploy(rate, wallet, token, cap, goal);
   deployedTokenSale.deployed();
 });
+
+// ICO Stages
+const preSale = 0;
+const preIcoRate = 300000;
+const seedSale = 1;
+const icoRate = 150000;
 
 describe("Deployment", function () {
   it("Should set the right owner", async function () {
@@ -42,19 +40,50 @@ describe("Deployment", function () {
 
 describe("Deployment", function () {
   it("Should set the right wallet", async function () {
-    expect(await deployedToken.wallet()).to.equal(wallet.address);
+    expect(await deployedTokenSale.wallet()).to.equal(wallet.address);
   });
 });
 
 describe("ZEROToken Crowdsale attributes", function () {
   it("tracks the rate", async function () {
-    expect(await deployedToken.rate()).to.equal(rate);
+    expect(await deployedTokenSale.rate()).to.equal(rate);
   });
   it("testing the max capacity to send ether", async function () {
-    expect(await deployedToken.cap).to.be.lessThanOrEqual(cap);
+    expect(await deployedTokenSale.cap).to.be.lessThanOrEqual(cap);
+  });
+  it("testing the goal of the ICO", async function () {
+    expect(await deployedTokenSale.goal).to.be.lessThanOrEqual(goal);
+  });
+  describe("when the ICO stage is in PreSale", function () {
+    beforeEach(async function () {
+      // Crowdsale stage is already PreICO by default
+      expect(await deployedTokenSale.buyTokens(addr2));
+    });
   });
 });
 
-it("testing the goal of the ICO", async function () {
-  expect(await deployedToken.goal).to.be.lessThanOrEqual(goal);
+describe("crowdsale stages", function () {
+  it("it starts in PreICO", async function () {
+    const stage = await deployedTokenSale.stage();
+    stage.should.be.bignumber.equal(preIcoRate);
+  });
+
+  it("starts at the preICO rate", async function () {
+    const rate = await deployedTokenSale.rate();
+    rate.should.be.bignumber.equal(preIcoRate);
+  });
+
+  it("allows admin to update the stage & rate", async function () {
+    const stage = await deployedTokenSale.setStage(seedSale);
+    
+    stage.should.be.bignumber.equal(seedSale);
+    const rate = await deployedTokenSale.rate();
+    expect(await rate).to.equal(icoRate);
+  });
+
+  it("prevents non-admin from updating the stage", async function () {
+    expect(await deployedTokenSale.setStage(preSale, { from: addr2 }))
+      .to.be.reverted  ;
+  });
 });
+

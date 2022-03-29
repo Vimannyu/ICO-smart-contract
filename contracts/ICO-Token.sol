@@ -16,7 +16,7 @@ contract ZEROToken is ERC20, ERC20Detailed {
     }
 
 
-    function getDecimal() public view returns (uint256) {
+    function getDecimal() public pure returns (uint256) {
         return 9;
     }
 }

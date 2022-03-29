@@ -7,7 +7,21 @@ import "@openzeppelin/contracts/crowdsale/validation/CappedCrowdsale.sol";
 import "@openzeppelin/contracts/crowdsale/distribution/RefundableCrowdsale.sol";
 import "./ICO-Token.sol";
 
-contract ZEROtokenSale is Crowdsale, CappedCrowdsale, RefundableCrowdsale  {
+
+contract Admin{
+    address  internal _admin;
+    
+    constructor() public {
+        _admin = msg.sender;
+    }
+
+    modifier onlyAdmin(){
+        require(msg.sender == _admin,"Admin required");
+        _;
+    }
+}
+
+contract ZEROtokenSale is Crowdsale, CappedCrowdsale, RefundableCrowdsale , Admin {
     uint256 private minTokenPreSaleCap = 30000000 * (10**(Token.getDecimal())); // in TOKENbits
     uint256 private minTokenSeedSaleCap = 50000000 * (10**(Token.getDecimal()));
     uint256 private minWeiAmountForPreSale = 3337; //min wei amouint to buy 1 token during presale.
@@ -40,7 +54,7 @@ contract ZEROtokenSale is Crowdsale, CappedCrowdsale, RefundableCrowdsale  {
         require(_goal <= _cap);
     }
 
-    function setStage(uint256 value) public {
+    function setStage(uint256 value) public  onlyAdmin {
         ICOStages _stage;
 
         if (uint256(ICOStages.preSale) == value) {
@@ -62,7 +76,7 @@ contract ZEROtokenSale is Crowdsale, CappedCrowdsale, RefundableCrowdsale  {
         return _rate;
     }
 
-    function setFinalStage(uint256 _rate) private {
+    function setFinalStage(uint256 _rate) private  onlyAdmin {
         if (goalReached()) {
             stage = ICOStages.finalSale;
             setRate(_rate);
@@ -72,7 +86,7 @@ contract ZEROtokenSale is Crowdsale, CappedCrowdsale, RefundableCrowdsale  {
         }
     }
 
-    function fundTransfer(uint256 _minInvestorAmount) external payable {
+    function fundTransfer(uint256 _minInvestorAmount) external payable  onlyAdmin{
         if (stage == ICOStages.preSale) {
             require(
                 _minInvestorAmount >= minWeiAmountForPreSale,
@@ -106,12 +120,8 @@ contract ZEROtokenSale is Crowdsale, CappedCrowdsale, RefundableCrowdsale  {
         }
     }
 
-    function endCrowdSale(address payable account ) private {
+    function endCrowdSale(address payable account) private   onlyAdmin {
         require(stage == ICOStages.finalSale, "Not in the final stage");
         claimRefund(account);
-
-
-       
-        
     }
 }
