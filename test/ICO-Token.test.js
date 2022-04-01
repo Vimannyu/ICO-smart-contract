@@ -1,6 +1,5 @@
 const {expect} = require('chai');
 const { ethers } = require('hardhat');
-const { describe } = require('yargs');
 
 describe("ERC20 Token testing" , function () {
 
@@ -8,13 +7,13 @@ describe("ERC20 Token testing" , function () {
 
 
         const token = await ethers.getContractFactory("ZEROToken");
-        const deptoken =  await token.deploy( 'ZeroToken' , 'ZERO' , 9 , 100000000  );
+        const deptoken =  await token.deploy( 'ZeroToken' , 'ZERO' , 18 , 100000000  );
          await deptoken.deployed();
 
-        expect(await deptoken.getName()).to.equal("ZeroToken");
-        expect(await deptoken.getSymbol()).to.equal('ZERO');
-        expect(await deptoken.getTotalSupply()).to.equal(100000000);
-        expect(await deptoken.getDecimal()).to.equal(9);
+        expect(await deptoken.name()).to.equal("ZeroToken");
+        expect(await deptoken.symbol()).to.equal('ZERO');
+        expect(await deptoken.totalSupply()).to.equal(100000000);
+        expect(await deptoken.decimals()).to.equal(18);
 
     })
 

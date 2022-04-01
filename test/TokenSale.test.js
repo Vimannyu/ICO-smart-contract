@@ -2,27 +2,21 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 beforeEach(async function () {
-  const token = await ethers.getContractFactory("ZEROToken");
-  const deptoken = await token.deploy("ZeroToken", "ZERO", 9, 100000000);
+  const Token = await ethers.getContractFactory("ZEROToken");
+  const deptoken = await Token.deploy("ZeroToken", "ZERO", 18, 100000000);
   await deptoken.deployed();
 
   const tokenSale = await ethers.getContractAt("ZEROtokenSale");
-  [wallet, owner, addr1, addr2, ...addrs] = await ethers.getSigners();
-});
+ const [walletaddr] = await ethers.getSigners();
+  console.log(wallet);
 
-const rate = 300000; //hardcoding rate to test it .
-const wallet = wallet.address;
-const token = deptoken.address;
-const exp = ethers.BigNumber.from("10").pow(19);
-const capval = ethers.BigNumber.from("10").mul(exp);
-const goalval = ethers.BigNumber.from("5").mul(exp);
-const cap = capval; // we will get the value in wei
-//console.log(cap);
-const goal = goalval; // the goal of the organisation to reach by creating ICO.
-//console.log(goal);
 
-beforeEach(async function () {
-  deployedTokenSale = await tokenSale.deploy(rate, wallet, token, cap, goal);
+  const rate = 300000; //hardcoding rate to test it .
+  const wallet = walletaddr.address;
+  const ERCToken = deptoken.address;
+  console.log(ERCToken);
+
+  deployedTokenSale = await tokenSale.deploy(rate, wallet, ERCToken);
   deployedTokenSale.deployed();
 });
 
@@ -48,12 +42,7 @@ describe("ZEROToken Crowdsale attributes", function () {
   it("tracks the rate", async function () {
     expect(await deployedTokenSale.rate()).to.equal(rate);
   });
-  it("testing the max capacity to send ether", async function () {
-    expect(await deployedTokenSale.cap).to.be.lessThanOrEqual(cap);
-  });
-  it("testing the goal of the ICO", async function () {
-    expect(await deployedTokenSale.goal).to.be.lessThanOrEqual(goal);
-  });
+
   describe("when the ICO stage is in PreSale", function () {
     beforeEach(async function () {
       // Crowdsale stage is already PreICO by default
@@ -75,15 +64,14 @@ describe("crowdsale stages", function () {
 
   it("allows admin to update the stage & rate", async function () {
     const stage = await deployedTokenSale.setStage(seedSale);
-    
+
     stage.should.be.bignumber.equal(seedSale);
     const rate = await deployedTokenSale.rate();
     expect(await rate).to.equal(icoRate);
   });
 
   it("prevents non-admin from updating the stage", async function () {
-    expect(await deployedTokenSale.setStage(preSale, { from: addr2 }))
-      .to.be.reverted  ;
+    expect(await deployedTokenSale.setStage(preSale, { from: addr2 })).to.be
+      .reverted;
   });
 });
-
