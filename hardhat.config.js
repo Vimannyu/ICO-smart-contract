@@ -45,11 +45,10 @@ module.exports = {
   networks: {
     ropsten: {
       url:
-        process.env.ROPSTEN_URL ||
-        "https://eth-ropsten.alchemyapi.io/v2/1ooKqDonNey5ZT-fCR2Ag7MfhtQPttxa",
+        process.env.ROPSTEN_URL ,
       accounts: (PRIVATE_KEY = [
-        "14db4132a8b9eeb87be6ade92fd4854b783e5ee7b60da8ffb9995645b21c77cf",
-        "16c568563fc6f4f0bdb70a9f9231b1fdc1df34b26e24bd6a80da80d2e01d011b",
+        process.env.PRIVATE_KEY,
+        ,process.env.PRIVATE_KEY2
       ]),
       //process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [""],
     },
@@ -59,6 +58,6 @@ module.exports = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: "X7DNSNA4P2W397T3TYH8E7UPA75ZAHQZNA",
+    apiKey: process.env.ETHERSCAN_API_KEY,
   },
 };

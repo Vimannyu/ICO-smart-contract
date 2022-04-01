@@ -2,8 +2,7 @@ const { ethers, contract } = require("hardhat");
 
 async function main() {
 
-  const [wallet, owner, ...address] = await hre.ethers.getSigners();
-  console.log(ethers.getSigners());
+  const [wallet] = await hre.ethers.getSigners();
 
 
   const Token = await ethers.getContractFactory("ZEROToken");
