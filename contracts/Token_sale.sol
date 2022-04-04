@@ -60,13 +60,14 @@ this function also set the rate according to the stage of the ICO */
     function _preValidatePurchase(address _beneficiary, uint256 _weiAmount)
        internal
     {
+        super._preValidatePurchase(_beneficiary, _weiAmount);
          require(_weiAmount >= minWeiAmountToBuyOneTokenForPresale || _weiAmount>= minWeiAmountToBuyOneTokenForSeedsale ||  _weiAmount>= minWeiAmountToBuyOneTokenForFinalsale , "amount required to buy one token not fullfilled");
         
          require( _getTokenAmount(weiRaised()) >= 30000000, "there are still some preSales tokens to spend");
          setStage(1);
          require(_getTokenAmount(weiRaised()) >= 50000000, "there are still some seedSales tokens to spend");
          setStage(2);
-         super._preValidatePurchase(_beneficiary, _weiAmount);
+         
 
     }
 
