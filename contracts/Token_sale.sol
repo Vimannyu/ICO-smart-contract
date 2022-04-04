@@ -6,13 +6,28 @@ import "@openzeppelin/contracts/crowdsale/Crowdsale.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract ZEROtokenSale is Crowdsale, Ownable , IERC20{
-//configuring different stages of ICO
+contract ZEROtokenSale is Crowdsale, Ownable, IERC20 {
+    //configuring different stages of ICO
     enum ICOsale {
         preSale,
         seedSale,
         finalSale
     }
+
+    uint256 constant denominatorForpreSale = 10**4;
+    uint256 constant denominatorForseedSale = 10**5;
+    uint256 constant denominatorForfinalSale = 10**6;
+    uint256 constant preRateBeforeDiv = 3;
+    uint256 constant seedRateBeforeDiv = 16;
+    uint256 constant finalRateBeforeDiv = 1;
+
+    uint256 public ratepreSale = preRateBeforeDiv.div(denominatorForpreSale);
+    uint256 public rateseedSale = seedRateBeforeDiv.div(denominatorForseedSale);
+    uint256 public ratefinalSale = finalRateBeforeDiv.div(denominatorForfinalSale);
+
+    uint256 constant minWeiAmountToBuyOneTokenForPresale = 3335;
+    uint256 constant minWeiAmountToBuyOneTokenForSeedsale = 6250;
+    uint256 constant minWeiAmountToBuyOneTokenForFinalsale = 1000000;
 
     ICOsale public stage = ICOsale.preSale; // Default stage
 
@@ -34,18 +49,25 @@ this function also set the rate according to the stage of the ICO */
         }
 
         if (stage == ICOsale.preSale) {
-            _rate = 300000;
-            if (_getTokenAmount(weiRaised()) >= 30000000) {
-                stage = ICOsale.seedSale;
-            }
+            _rate = ratepreSale;
         } else if (stage == ICOsale.seedSale) {
-            _rate = 150000;
-            if (_getTokenAmount(weiRaised()) >= 50000000) {
-                stage == ICOsale.finalSale;
-            }
+            _rate = rateseedSale;
         } else {
-            _rate = 100000; // assuming the final stage rate.
+            _rate = ratefinalSale; // assuming the final stage rate = 0.03.
         }
+    }
+
+    function _preValidatePurchase(address _beneficiary, uint256 _weiAmount)
+       internal
+    {
+         require(_weiAmount >= minWeiAmountToBuyOneTokenForPresale || _weiAmount>= minWeiAmountToBuyOneTokenForSeedsale ||  _weiAmount>= minWeiAmountToBuyOneTokenForFinalsale , "amount required to buy one token not fullfilled");
+        
+         require( _getTokenAmount(weiRaised()) >= 30000000, "there are still some preSales tokens to spend");
+         setStage(1);
+         require(_getTokenAmount(weiRaised()) >= 50000000, "there are still some seedSales tokens to spend");
+         setStage(2);
+         super._preValidatePurchase(_beneficiary, _weiAmount);
+
     }
 
     /*this function can end the ICO crowdsale without losing any ether but if you want to still use this smart contract in future you can use delegate call to transfer this contract to another.   */
