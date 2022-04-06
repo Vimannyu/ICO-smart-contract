@@ -39,7 +39,7 @@ contract ZEROtokenSale is Crowdsale, Ownable, IERC20 {
 
     /* This function sets the stage of the ICO like( presale ,seedsale ), only admin/owner can call this function and
 this function also set the rate according to the stage of the ICO */
-    function setStage(uint256 _stage) public  {
+    function setStage(uint256 _stage) internal  {
         if (uint256(ICOsale.preSale) == _stage) {
             stage = ICOsale.preSale;
         } else if (uint256(ICOsale.seedSale) == _stage) {
